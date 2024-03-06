@@ -40,7 +40,6 @@ const registerUser = asyncHandler(async (req, res) => {
 		username,
 		email,
 		password: hashedPassword,
-		token: generateToken(user._id),
 	});
 
 	if (user) {
@@ -48,6 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
 			_id: user.id,
 			username: user.username,
 			email: user.email,
+			token: generateToken(user._id),
 		});
 	} else {
 		res.status(400);

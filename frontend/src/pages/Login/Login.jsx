@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { FaSignInAlt } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaUser } from 'react-icons/fa';
 import Spinner from '../../components/Spinner/Spinner';
 
-import { register, reset } from '../../features/auth/authSlice';
+import { login, reset } from '../../features/auth/authSlice';
 
-function Register() {
+function Login() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	const [formData, setFormData] = useState({
-		username: '',
 		email: '',
 		password: '',
-		password2: '',
 	});
 
-	const { username, email, password, password2 } = formData;
+	const { email, password } = formData;
 
 	const { user, isLoading, isError, isSuccess, message } = useSelector(
 		(state) => state.auth
@@ -44,17 +42,12 @@ function Register() {
 
 	const onSubmit = (e) => {
 		e.preventDefault();
-		if (password !== password2) {
-			toast.error('Password do not match');
-		} else {
-			const userData = {
-				username,
-				email,
-				password,
-			};
+		const userData = {
+			email,
+			password,
+		};
 
-			dispatch(register(userData));
-		}
+		dispatch(login(userData));
 	};
 
 	if (isLoading) {
@@ -65,19 +58,10 @@ function Register() {
 		<>
 			<section>
 				<h1>
-					<FaUser></FaUser> Register
+					<FaSignInAlt></FaSignInAlt> Login
 				</h1>
-				<p>Please Create an Account:</p>
+				<p>Please Login:</p>
 				<form>
-					<input
-						type='text'
-						id='username'
-						name='username'
-						value={username}
-						placeholder='Enter Username'
-						onChange={onChange}
-					/>
-
 					<input
 						type='text'
 						id='email'
@@ -96,19 +80,11 @@ function Register() {
 						onChange={onChange}
 					/>
 
-					<input
-						type='password'
-						id='password2'
-						name='password2'
-						value={password2}
-						placeholder='Confirm Password'
-						onChange={onChange}
-					/>
-					<button onClick={onSubmit}>Register</button>
+					<button onClick={onSubmit}>Login</button>
 				</form>
 			</section>
 		</>
 	);
 }
 
-export default Register;
+export default Login;
