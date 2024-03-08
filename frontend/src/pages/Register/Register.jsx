@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FaUser } from 'react-icons/fa';
-import Spinner from '../../components/Spinner/Spinner';
+import { Spinner } from '@nextui-org/react';
 
 import { register, reset } from '../../features/auth/authSlice';
 

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Button, Card, CardBody, Input, Link } from '@nextui-org/react';
+//import { Link } from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
+import * as S from './Login.styled';
 
 import { login, reset } from '../../features/auth/authSlice';
 
@@ -56,33 +59,42 @@ function Login() {
 
 	return (
 		<>
-			<section>
-				<h1>
-					<FaSignInAlt></FaSignInAlt> Login
-				</h1>
-				<p>Please Login:</p>
-				<form>
-					<input
-						type='text'
-						id='email'
-						name='email'
-						value={email}
-						placeholder='Enter Email'
-						onChange={onChange}
-					/>
+			<S.Container>
+				<S.Heading>TSM TRADER</S.Heading>
+				<Card>
+					<CardBody className='p-4'>
+						<S.Form className='gap-4'>
+							<Input
+								type='email'
+								label='Email'
+								id='email'
+								name='email'
+								value={email}
+								placeholder='Enter Email'
+								onChange={onChange}
+							/>
 
-					<input
-						type='password'
-						id='password'
-						name='password'
-						value={password}
-						placeholder='Enter Password'
-						onChange={onChange}
-					/>
+							<Input
+								type='password'
+								label='Password'
+								id='password'
+								name='password'
+								value={password}
+								placeholder='Enter Password'
+								onChange={onChange}
+							/>
 
-					<button onClick={onSubmit}>Login</button>
-				</form>
-			</section>
+							<Button onClick={onSubmit}>LOGIN</Button>
+						</S.Form>
+						<span className='text-center'>
+							Don't have an account?{' '}
+							<Link>
+								<NavLink to={'/register'}>Sign up</NavLink>
+							</Link>
+						</span>
+					</CardBody>
+				</Card>
+			</S.Container>
 		</>
 	);
 }

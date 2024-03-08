@@ -1,9 +1,17 @@
 import React from 'react';
 import * as S from './Header.styled';
 import { FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../../features/auth/authSlice';
+import {
+	Navbar,
+	NavbarBrand,
+	NavbarContent,
+	NavbarItem,
+	Link,
+	Button,
+} from '@nextui-org/react';
 
 function Header() {
 	const navigate = useNavigate();
@@ -19,35 +27,72 @@ function Header() {
 	};
 
 	return (
-		<S.Header className='flex mb-4 p-10 bg-black'>
-			<S.Logo>
-				<S.NavLink to='/'>TSMTrader</S.NavLink>
-			</S.Logo>
-			<ul>
+		// <S.Header className='flex mb-4 p-10 bg-black'>
+		// 	<S.Logo>
+		// 		<S.NavLink to='/'>TSMTrader</S.NavLink>
+		// 	</S.Logo>
+		// 	<ul>
+		// 		{user ? (
+		// 			<>
+		// 				<li className='block'>
+		// 					<button onClick={onLogout}>
+		// 						<FaSignOutAlt></FaSignOutAlt> Logout
+		// 					</button>
+		// 				</li>
+		// 			</>
+		// 		) : (
+		// 			<>
+		// 				<li className='block'>
+		// 					<S.NavLink to={'/login'} className='block text-white'>
+		// 						Login
+		// 					</S.NavLink>
+		// 				</li>
+		// 				<li className='block'>
+		// 					<S.NavLink to={'/register'} href='#' className='block text-white'>
+		// 						Register
+		// 					</S.NavLink>
+		// 				</li>
+		// 			</>
+		// 		)}
+		// 	</ul>
+		// </S.Header>
+
+		<Navbar className='dark text-white'>
+			<NavbarBrand>
+				{/* <AcmeLogo /> */}
+				<p className='font-bold text-inherit'>
+					<NavLink to='/'>TSMTrader</NavLink>
+				</p>
+			</NavbarBrand>
+			<NavbarContent className='sm:flex gap-4' justify='center'>
 				{user ? (
 					<>
-						<li className='block'>
-							<button onClick={onLogout}>
+						<NavbarItem>
+							<Button
+								onClick={onLogout}
+								color='primary'
+								href='#'
+								variant='flat'>
 								<FaSignOutAlt></FaSignOutAlt> Logout
-							</button>
-						</li>
+							</Button>
+						</NavbarItem>
 					</>
 				) : (
 					<>
-						<li className='block'>
-							<S.NavLink to={'/login'} className='block text-white'>
-								Login
-							</S.NavLink>
-						</li>
-						<li className='block'>
-							<S.NavLink to={'/register'} href='#' className='block text-white'>
-								Register
-							</S.NavLink>
-						</li>
+						<NavbarItem>
+							<Link color='foreground'>
+								<NavLink to={'/login'}>Login</NavLink>
+							</Link>
+						</NavbarItem>
+						<NavbarItem>
+							<Link color='foreground'>
+								<NavLink to={'/register'}>Register</NavLink>
+							</Link>
+						</NavbarItem>
 					</>
 				)}
-			</ul>
-		</S.Header>
+			</NavbarContent>
+		</Navbar>
 	);
 }
 
