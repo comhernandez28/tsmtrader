@@ -88,7 +88,7 @@ function Login() {
 						</S.Form>
 						<span className='text-center'>
 							Don't have an account?{' '}
-							<Link>
+							<Link color='foreground' underline='always'>
 								<NavLink to={'/register'}>Sign up</NavLink>
 							</Link>
 						</span>

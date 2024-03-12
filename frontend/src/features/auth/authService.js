@@ -11,6 +11,18 @@ const register = async (userData) => {
 
 	return res.data;
 };
+
+//Update User
+const update = async (userData, userId) => {
+	const res = await axios.put(API_URL + userId, userData);
+
+	if (res.data) {
+		localStorage.setItem('user', JSON.stringify(res.data));
+	}
+
+	return res.data;
+};
+
 //Login User
 const login = async (userData) => {
 	const res = await axios.post(API_URL + 'login', userData);
@@ -31,6 +43,7 @@ const authService = {
 	register,
 	login,
 	logout,
+	update,
 };
 
 export default authService;

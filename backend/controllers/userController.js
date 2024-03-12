@@ -74,14 +74,27 @@ const loginUser = asyncHandler(async (req, res) => {
 		res.status(400);
 		throw new Error('Invalid credentials');
 	}
-	res.status(200).json({ user: 'login user' });
 });
 
 // @desc Update User
 // @route PUT /api/user/:id
 // @access Private
 const updateUser = asyncHandler(async (req, res) => {
-	res.status(200).json({ user: 'updated user' });
+	const user = await User.findOneAndUpdate({ _id: req.params.id }, req.body, {
+		new: true,
+	});
+
+	if (user) {
+		return res.status(201).json({
+			_id: user.id,
+			username: user.username,
+			email: user.email,
+			tsmToken: user.tsmToken,
+		});
+	} else {
+		res.status(400);
+		throw new Error('Failed to update user');
+	}
 });
 
 // @desc Delete User

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from './authService';
-import { FaLessThanEqual } from 'react-icons/fa';
 
 //get user from local storage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -46,6 +45,22 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
 export const logout = createAsyncThunk('auth/logout', async () => {
 	await authService.logout();
 });
+
+//Update User
+export const update = createAsyncThunk(
+	'auth/update',
+	async (user, thunkAPI) => {
+		try {
+			return await authService.update(user, user.id);
+		} catch (err) {
+			const message =
+				(err.response && err.response.data && err.response.data.message) ||
+				err.message ||
+				err.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
 
 export const authSlice = createSlice({
 	name: 'auth',
@@ -93,6 +108,20 @@ export const authSlice = createSlice({
 			//LOGOUT CASE
 			.addCase(logout.fulfilled, (state) => {
 				state.user = null;
+			})
+			//UPDATE CASES
+			.addCase(update.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.user = action.payload;
+			})
+			.addCase(update.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(update.pending, (state) => {
+				state.isLoading = true;
 			});
 	},
 });

@@ -844,6 +844,10 @@ video {
   display: inline-block;
 }
 
+.inline {
+  display: inline;
+}
+
 .flex {
   display: flex;
 }
@@ -2450,6 +2454,10 @@ video {
   line-height: 1.75rem;
 }
 
+.font-bold {
+  font-weight: 700;
+}
+
 .font-normal {
   font-weight: 400;
 }
@@ -3498,7 +3506,7 @@ video {
 }
 
 .main-content {
-  margin: 10px;
+  margin: 20px 5%;
   min-height: 100%;
   color: white;
 }
@@ -6715,6 +6723,14 @@ html {
     margin-bottom: 4rem;
   }
 
+  .sm\:flex {
+    display: flex;
+  }
+
+  .sm\:max-w-\[44\%\] {
+    max-width: 44%;
+  }
+
   .sm\:items-start {
     align-items: flex-start;
   }
@@ -6749,6 +6765,12 @@ html {
 
   .group[data-hover=true] .sm\:group-data-\[hover\=true\]\:data-\[visible\=true\]\:opacity-100[data-visible=true] {
     opacity: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:w-1\/2 {
+    width: 50%;
   }
 }
 

@@ -11,6 +11,7 @@ import {
 	NavbarItem,
 	Link,
 	Button,
+	User,
 } from '@nextui-org/react';
 
 function Header() {
@@ -27,36 +28,6 @@ function Header() {
 	};
 
 	return (
-		// <S.Header className='flex mb-4 p-10 bg-black'>
-		// 	<S.Logo>
-		// 		<S.NavLink to='/'>TSMTrader</S.NavLink>
-		// 	</S.Logo>
-		// 	<ul>
-		// 		{user ? (
-		// 			<>
-		// 				<li className='block'>
-		// 					<button onClick={onLogout}>
-		// 						<FaSignOutAlt></FaSignOutAlt> Logout
-		// 					</button>
-		// 				</li>
-		// 			</>
-		// 		) : (
-		// 			<>
-		// 				<li className='block'>
-		// 					<S.NavLink to={'/login'} className='block text-white'>
-		// 						Login
-		// 					</S.NavLink>
-		// 				</li>
-		// 				<li className='block'>
-		// 					<S.NavLink to={'/register'} href='#' className='block text-white'>
-		// 						Register
-		// 					</S.NavLink>
-		// 				</li>
-		// 			</>
-		// 		)}
-		// 	</ul>
-		// </S.Header>
-
 		<Navbar className='dark text-white'>
 			<NavbarBrand>
 				{/* <AcmeLogo /> */}
@@ -69,8 +40,17 @@ function Header() {
 					<>
 						<NavbarItem>
 							<Button
+								onClick={(e) => {
+									e.preventDefault();
+									navigate('/profile');
+								}}>
+								{user.username}
+							</Button>
+						</NavbarItem>
+						<NavbarItem>
+							<Button
 								onClick={onLogout}
-								color='primary'
+								color='default'
 								href='#'
 								variant='flat'>
 								<FaSignOutAlt></FaSignOutAlt> Logout

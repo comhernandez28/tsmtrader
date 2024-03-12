@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaUser } from 'react-icons/fa';
-import { Spinner } from '@nextui-org/react';
+import { Button, Card, CardBody, Input, Spinner } from '@nextui-org/react';
+import * as S from './Register.styled';
 
 import { register, reset } from '../../features/auth/authSlice';
 
@@ -63,50 +63,64 @@ function Register() {
 
 	return (
 		<>
-			<section>
-				<h1>
-					<FaUser></FaUser> Register
-				</h1>
-				<p>Please Create an Account:</p>
-				<form>
-					<input
-						type='text'
-						id='username'
-						name='username'
-						value={username}
-						placeholder='Enter Username'
-						onChange={onChange}
-					/>
+			<S.Container>
+				<S.Heading>TSM TRADER</S.Heading>
+				<Card>
+					<CardBody>
+						<S.SubHeader>Create an Account:</S.SubHeader>
+						<S.Form className='gap-4'>
+							<S.FormGroup className='gap-4'>
+								<Input
+									size='lg'
+									type='text'
+									label='Username'
+									id='username'
+									name='username'
+									value={username}
+									placeholder='Enter Username'
+									onChange={onChange}
+								/>
 
-					<input
-						type='text'
-						id='email'
-						name='email'
-						value={email}
-						placeholder='Enter Email'
-						onChange={onChange}
-					/>
+								<Input
+									size='lg'
+									type='text'
+									label='Email'
+									id='email'
+									name='email'
+									value={email}
+									placeholder='Enter Email'
+									onChange={onChange}
+								/>
+							</S.FormGroup>
 
-					<input
-						type='password'
-						id='password'
-						name='password'
-						value={password}
-						placeholder='Enter Password'
-						onChange={onChange}
-					/>
+							<S.FormGroup className='gap-4'>
+								<Input
+									size='lg'
+									type='password'
+									label='Password'
+									id='password'
+									name='password'
+									value={password}
+									placeholder='Enter Password'
+									onChange={onChange}
+								/>
 
-					<input
-						type='password'
-						id='password2'
-						name='password2'
-						value={password2}
-						placeholder='Confirm Password'
-						onChange={onChange}
-					/>
-					<button onClick={onSubmit}>Register</button>
-				</form>
-			</section>
+								<Input
+									size='lg'
+									type='password'
+									label='Password'
+									id='password2'
+									name='password2'
+									value={password2}
+									placeholder='Confirm Password'
+									onChange={onChange}
+								/>
+							</S.FormGroup>
+							<Button onClick={onSubmit}>Register</Button>
+						</S.Form>
+					</CardBody>
+				</Card>
+			</S.Container>
 		</>
 	);
 }
