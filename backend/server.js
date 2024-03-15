@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //Routes
 app.use('/api/user', require('./routes/userRoutes'));
+app.use('/api/tsm', require('./routes/tsmRoutes'));
 
 //Error Middleware
 app.use(errorHandler);

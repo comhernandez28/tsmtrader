@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaChevronDown, FaSearch } from 'react-icons/fa';
 import {
 	Link,
@@ -23,6 +23,8 @@ import {
 	Pagination,
 	table,
 } from '@nextui-org/react';
+
+import { getApiKey, reset } from '../../features/tsm/tsmSlice';
 
 //const INITIAL_VISIBLE_COLUMNS = ['name', 'role', 'status', 'actions'];
 const realmOptions = [
@@ -71,6 +73,12 @@ const data = {
 };
 
 function Dashboard() {
+	const dispatch = useDispatch();
+
+	const { tsmApiKey, isError, isSuccess, message } = useSelector(
+		(state) => state.tsm
+	);
+
 	const [tableData, setTableData] = useState({ columns: [], rows: [] });
 	const [filterValue, setFilterValue] = useState('');
 	// const [visibleColumns, setVisibleColumns] = useState(
@@ -92,6 +100,9 @@ function Dashboard() {
 		if (!user) {
 			navigate('/login');
 		}
+
+		//make a fetch for token
+		dispatch(getApiKey());
 		setTableData((prevState) => ({
 			...prevState,
 			data,
@@ -99,7 +110,9 @@ function Dashboard() {
 
 		columns = tableData.columns;
 		rows = tableData.rows;
-	}, []);
+
+		dispatch(reset());
+	}, [dispatch]);
 
 	let { columns, rows } = data;
 
