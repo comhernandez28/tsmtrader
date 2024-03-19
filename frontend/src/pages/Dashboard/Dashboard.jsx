@@ -24,12 +24,18 @@ import {
 	table,
 } from '@nextui-org/react';
 
-import { getApiKey, reset } from '../../features/tsm/tsmSlice';
+import { getApiKey, getRealms, reset } from '../../features/tsm/tsmSlice';
 
 //const INITIAL_VISIBLE_COLUMNS = ['name', 'role', 'status', 'actions'];
+
+const regionOptions = [
+	{ uid: 1, name: 'realm 1' },
+	{ uid: 2, name: 'realm 1' },
+];
+
 const realmOptions = [
 	{ uid: 1, name: 'realm 1' },
-	{ uid: 1, name: 'realm 1' },
+	{ uid: 2, name: 'realm 1' },
 ];
 
 const data = {
@@ -75,7 +81,7 @@ const data = {
 function Dashboard() {
 	const dispatch = useDispatch();
 
-	const { tsmApiKey, isError, isSuccess, message } = useSelector(
+	const { tsmApiKey, tsmRealms, isError, isSuccess, message } = useSelector(
 		(state) => state.tsm
 	);
 
@@ -84,6 +90,7 @@ function Dashboard() {
 	// const [visibleColumns, setVisibleColumns] = useState(
 	// 	new Set(INITIAL_VISIBLE_COLUMNS)
 	// );
+	const [regionFilter, setRegionFilter] = useState('all');
 	const [realmFilter, setRealmFilter] = useState('all');
 	const [auctionHouseFilter, setAuctionHouseFilter] = useState('all');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -101,8 +108,32 @@ function Dashboard() {
 			navigate('/login');
 		}
 
+		if (!tsmRealms) {
+			dispatch(getRealms());
+		}
+
 		//make a fetch for token
-		dispatch(getApiKey());
+		dispatch(getApiKey(user));
+
+		const mapThroughRegions = (tsmRealms) => {
+			//todo map through english regions and set them as columns
+			const englishRegions = tsmRealms.items.map((item) => {
+				if (item.name === 'North America' || 'Europe') {
+					console.log(item);
+				}
+				return item;
+			});
+			console.log(englishRegions);
+			// console.log(
+			// 	'filtered regiosn' +
+			// 		JSON.stringify(JSON.parse(englishRegions.items), null, 2)
+			// );
+		};
+
+		if (tsmRealms) {
+			mapThroughRegions(tsmRealms);
+		}
+
 		setTableData((prevState) => ({
 			...prevState,
 			data,
@@ -111,8 +142,8 @@ function Dashboard() {
 		columns = tableData.columns;
 		rows = tableData.rows;
 
-		dispatch(reset());
-	}, [dispatch]);
+		//dispatch(reset());
+	}, [dispatch, tsmRealms]);
 
 	let { columns, rows } = data;
 
@@ -150,13 +181,35 @@ function Dashboard() {
 							onValueChange={onSearchChange}
 						/>
 						<div className='flex gap-3'>
+							{/* REGION DROPDOWN */}
+							<Dropdown>
+								<DropdownTrigger className='hidden sm:flex'>
+									<Button
+										endContent={<FaChevronDown className='text-small' />}
+										variant='flat'>
+										Region
+									</Button>
+								</DropdownTrigger>
+								<DropdownMenu
+									disallowEmptySelection
+									aria-label='Table Columns'
+									closeOnSelect={false}
+									selectedKeys={regionFilter}
+									selectionMode='multiple'
+									onSelectionChange={setRegionFilter}>
+									{regionOptions.map((region) => (
+										<DropdownItem key={region.uid}>{region.name}</DropdownItem>
+									))}
+								</DropdownMenu>
+							</Dropdown>
+
 							{/* REALMS DROPDOWN */}
 							<Dropdown>
 								<DropdownTrigger className='hidden sm:flex'>
 									<Button
 										endContent={<FaChevronDown className='text-small' />}
 										variant='flat'>
-										Realms
+										Realm
 									</Button>
 								</DropdownTrigger>
 								<DropdownMenu

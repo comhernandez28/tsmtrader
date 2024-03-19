@@ -15,6 +15,18 @@ const getApiKey = async (user, token) => {
 
 	return res.data;
 };
-const tsmService = { getApiKey };
+
+//Get Realms
+const getRealms = async (tsmApiKey, token) => {
+	const res = await axios.post(API_URL + 'realms', tsmApiKey, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+	return res.data;
+};
+
+const tsmService = { getApiKey, getRealms };
 
 export default tsmService;

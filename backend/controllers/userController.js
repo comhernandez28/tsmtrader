@@ -69,6 +69,7 @@ const loginUser = asyncHandler(async (req, res) => {
 			username: user.username,
 			email: user.email,
 			token: generateToken(user._id),
+			tsmToken: user.tsmToken ? user.tsmToken : null,
 		});
 	} else {
 		res.status(400);
