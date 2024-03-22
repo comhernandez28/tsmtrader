@@ -28,10 +28,11 @@ import { getApiKey, getRealms, reset } from '../../features/tsm/tsmSlice';
 
 //const INITIAL_VISIBLE_COLUMNS = ['name', 'role', 'status', 'actions'];
 
-const regionOptions = [
-	{ uid: 1, name: 'realm 1' },
-	{ uid: 2, name: 'realm 1' },
-];
+// const regionOptions = [
+// 	{ uid: 1, name: 'realm 1' },
+// 	{ uid: 2, name: 'realm 1' },
+// ];
+let regionOptions = [{}];
 
 const realmOptions = [
 	{ uid: 1, name: 'realm 1' },
@@ -115,23 +116,20 @@ function Dashboard() {
 		//make a fetch for token
 		dispatch(getApiKey(user));
 
-		const mapThroughRegions = (tsmRealms) => {
-			//todo map through english regions and set them as columns
-			const englishRegions = tsmRealms.items.map((item) => {
-				if (item.name === 'North America' || 'Europe') {
-					console.log(item);
+		//TODO: show all regions
+		const filterRegions = (tsmRealms) => {
+			const englishRegions = tsmRealms.items.filter((item) => {
+				if (item.regionPrefix === 'us' || item.regionPrefix === 'eu') {
+					return item;
 				}
-				return item;
 			});
 			console.log(englishRegions);
-			// console.log(
-			// 	'filtered regiosn' +
-			// 		JSON.stringify(JSON.parse(englishRegions.items), null, 2)
-			// );
+			return englishRegions;
 		};
 
 		if (tsmRealms) {
-			mapThroughRegions(tsmRealms);
+			const filteredRegions = filterRegions(tsmRealms);
+			regionOptions = [filterRegions];
 		}
 
 		setTableData((prevState) => ({
@@ -198,7 +196,9 @@ function Dashboard() {
 									selectionMode='multiple'
 									onSelectionChange={setRegionFilter}>
 									{regionOptions.map((region) => (
-										<DropdownItem key={region.uid}>{region.name}</DropdownItem>
+										<DropdownItem key={region.regionId}>
+											{region.name}
+										</DropdownItem>
 									))}
 								</DropdownMenu>
 							</Dropdown>
