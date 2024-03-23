@@ -26,19 +26,14 @@ import {
 
 import { getApiKey, getRealms, reset } from '../../features/tsm/tsmSlice';
 
-//const INITIAL_VISIBLE_COLUMNS = ['name', 'role', 'status', 'actions'];
-
-// const regionOptions = [
-// 	{ uid: 1, name: 'realm 1' },
-// 	{ uid: 2, name: 'realm 1' },
-// ];
 let regionOptions = [{}];
+let regionsWithRealms = [{}];
 
-const realmOptions = [
-	{ uid: 1, name: 'realm 1' },
-	{ uid: 2, name: 'realm 1' },
-];
+let realmOptions = [{}];
 
+let auctionHouseOptions = [{}];
+
+//TODO: after selecting the AH pull items alphabetically and paginate
 const data = {
 	columns: [
 		{
@@ -88,12 +83,9 @@ function Dashboard() {
 
 	const [tableData, setTableData] = useState({ columns: [], rows: [] });
 	const [filterValue, setFilterValue] = useState('');
-	// const [visibleColumns, setVisibleColumns] = useState(
-	// 	new Set(INITIAL_VISIBLE_COLUMNS)
-	// );
-	const [regionFilter, setRegionFilter] = useState('all');
-	const [realmFilter, setRealmFilter] = useState('all');
-	const [auctionHouseFilter, setAuctionHouseFilter] = useState('all');
+	const [regionFilter, setRegionFilter] = useState(null);
+	const [realmFilter, setRealmFilter] = useState(null);
+	const [auctionHouseFilter, setAuctionHouseFilter] = useState(null);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [page, setPage] = useState(1);
 
@@ -116,20 +108,30 @@ function Dashboard() {
 		//make a fetch for token
 		dispatch(getApiKey(user));
 
-		//TODO: show all regions
 		const filterRegions = (tsmRealms) => {
 			const englishRegions = tsmRealms.items.filter((item) => {
-				if (item.regionPrefix === 'us' || item.regionPrefix === 'eu') {
+				if (
+					(item.regionPrefix === 'us' || item.regionPrefix === 'eu') &&
+					(item.gameVersion === 'Season of Discovery' ||
+						item.gameVersion === 'Classic Era - Hardcore' ||
+						item.gameVersion === 'Wrath')
+				) {
 					return item;
 				}
 			});
-			console.log(englishRegions);
 			return englishRegions;
 		};
 
 		if (tsmRealms) {
 			const filteredRegions = filterRegions(tsmRealms);
-			regionOptions = [filterRegions];
+			regionsWithRealms = filteredRegions;
+			const finalRegions = filteredRegions.map((region) => {
+				return {
+					uid: region.regionId,
+					name: region.name + ' | ' + region.gameVersion,
+				};
+			});
+			regionOptions = finalRegions;
 		}
 
 		setTableData((prevState) => ({
@@ -164,6 +166,14 @@ function Dashboard() {
 		setPage(1);
 	}, []);
 
+	const onChangeRegion = (id) => {
+		realmOptions = regionsWithRealms[id].realms;
+	};
+
+	const onChangeRealm = (id) => {
+		auctionHouseOptions = realmOptions[id].auctionHouses;
+	};
+
 	const topContent = useMemo(() => {
 		return (
 			<div>
@@ -190,21 +200,20 @@ function Dashboard() {
 								</DropdownTrigger>
 								<DropdownMenu
 									disallowEmptySelection
+									onAction={onChangeRegion}
 									aria-label='Table Columns'
-									closeOnSelect={false}
+									closeOnSelect={true}
 									selectedKeys={regionFilter}
-									selectionMode='multiple'
+									selectionMode='single'
 									onSelectionChange={setRegionFilter}>
-									{regionOptions.map((region) => (
-										<DropdownItem key={region.regionId}>
-											{region.name}
-										</DropdownItem>
+									{regionOptions.map((region, index) => (
+										<DropdownItem key={index}>{region.name}</DropdownItem>
 									))}
 								</DropdownMenu>
 							</Dropdown>
 
 							{/* REALMS DROPDOWN */}
-							<Dropdown>
+							<Dropdown isDisabled={regionFilter === null}>
 								<DropdownTrigger className='hidden sm:flex'>
 									<Button
 										endContent={<FaChevronDown className='text-small' />}
@@ -214,20 +223,21 @@ function Dashboard() {
 								</DropdownTrigger>
 								<DropdownMenu
 									disallowEmptySelection
+									onAction={onChangeRealm}
 									aria-label='Table Columns'
-									closeOnSelect={false}
+									closeOnSelect={true}
 									selectedKeys={realmFilter}
-									selectionMode='multiple'
+									selectionMode='single'
 									onSelectionChange={setRealmFilter}>
-									{realmOptions.map((realm) => (
-										<DropdownItem key={realm.uid}>{realm.name}</DropdownItem>
+									{realmOptions.map((realm, index) => (
+										<DropdownItem key={index}>{realm.name}</DropdownItem>
 									))}
 								</DropdownMenu>
 							</Dropdown>
 
 							{/* AH DROPDOWN */}
 
-							<Dropdown>
+							<Dropdown isDisabled={realmFilter === null}>
 								<DropdownTrigger className='hidden sm:flex'>
 									<Button
 										endContent={<FaChevronDown className='text-small' />}
@@ -240,16 +250,13 @@ function Dashboard() {
 									aria-label='Table Columns'
 									closeOnSelect={false}
 									selectedKeys={auctionHouseFilter}
-									selectionMode='multiple'
+									selectionMode='single'
 									onSelectionChange={setAuctionHouseFilter}>
-									{realmOptions.map((realm) => (
-										<DropdownItem key={realm.uid}>{realm.name}</DropdownItem>
+									{auctionHouseOptions.map((ah, index) => (
+										<DropdownItem key={index}>{ah.type}</DropdownItem>
 									))}
 								</DropdownMenu>
 							</Dropdown>
-
-							{/* more options */}
-							<Button color='primary'>Add New</Button>
 						</div>
 					</div>
 					<div className='flex justify-between items-center'>
