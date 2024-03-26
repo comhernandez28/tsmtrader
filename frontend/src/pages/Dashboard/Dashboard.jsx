@@ -86,6 +86,11 @@ function Dashboard() {
 	const [regionFilter, setRegionFilter] = useState(null);
 	const [realmFilter, setRealmFilter] = useState(null);
 	const [auctionHouseFilter, setAuctionHouseFilter] = useState(null);
+	const [selectedFilters, setSelectedFilters] = useState({
+		region: null,
+		realm: null,
+		auctionHouse: null,
+	});
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [page, setPage] = useState(1);
 
@@ -142,7 +147,7 @@ function Dashboard() {
 		columns = tableData.columns;
 		rows = tableData.rows;
 
-		//dispatch(reset());
+		dispatch(reset());
 	}, [dispatch, tsmRealms]);
 
 	let { columns, rows } = data;
@@ -168,10 +173,26 @@ function Dashboard() {
 
 	const onChangeRegion = (id) => {
 		realmOptions = regionsWithRealms[id].realms;
+		setSelectedFilters((prevState) => ({
+			...prevState,
+			region: regionsWithRealms[id],
+		}));
 	};
 
 	const onChangeRealm = (id) => {
 		auctionHouseOptions = realmOptions[id].auctionHouses;
+		setSelectedFilters((prevState) => ({
+			...prevState,
+			realm: realmOptions[id],
+		}));
+	};
+
+	const onChangeAuctionHouse = (id) => {
+		setSelectedFilters((prevState) => ({
+			...prevState,
+			auctionHouse: auctionHouseOptions[id],
+		}));
+		console.log(auctionHouseOptions[id]);
 	};
 
 	const topContent = useMemo(() => {
@@ -195,7 +216,11 @@ function Dashboard() {
 									<Button
 										endContent={<FaChevronDown className='text-small' />}
 										variant='flat'>
-										Region
+										{selectedFilters.region
+											? selectedFilters.region.name +
+											  ' | ' +
+											  selectedFilters.region.gameVersion
+											: 'Region'}
 									</Button>
 								</DropdownTrigger>
 								<DropdownMenu
@@ -218,7 +243,9 @@ function Dashboard() {
 									<Button
 										endContent={<FaChevronDown className='text-small' />}
 										variant='flat'>
-										Realm
+										{selectedFilters.realm
+											? selectedFilters.realm.name
+											: 'Realm'}
 									</Button>
 								</DropdownTrigger>
 								<DropdownMenu
@@ -242,11 +269,14 @@ function Dashboard() {
 									<Button
 										endContent={<FaChevronDown className='text-small' />}
 										variant='flat'>
-										Auction House
+										{selectedFilters.auctionHouse
+											? selectedFilters.auctionHouse.type
+											: 'Auction House'}
 									</Button>
 								</DropdownTrigger>
 								<DropdownMenu
 									disallowEmptySelection
+									onAction={onChangeAuctionHouse}
 									aria-label='Table Columns'
 									closeOnSelect={false}
 									selectedKeys={auctionHouseFilter}
