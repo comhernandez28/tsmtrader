@@ -8,6 +8,9 @@ const port = process.env.PORT || 8000;
 connectDB();
 
 const app = express();
+//Proxy trust for express-rate-limiter
+// @https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues
+app.set('trust proxy', 1);
 
 //Middleware
 app.use(express.json());

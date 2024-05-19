@@ -23,7 +23,6 @@ import {
 	Pagination,
 	table,
 } from '@nextui-org/react';
-import PricesTable from '../../components/PricesTable/PricesTable';
 
 import {
 	getApiKey,
@@ -80,7 +79,7 @@ const data = {
 	],
 };
 
-function Dashboard() {
+function PricesTable() {
 	const dispatch = useDispatch();
 
 	const { tsmApiKey, tsmRealms, tsmOptions, isError, isSuccess, message } =
@@ -107,8 +106,8 @@ function Dashboard() {
 	});
 
 	useEffect(() => {
-		if (!user) {
-			navigate('/login');
+		if (isError) {
+			console.log(isError);
 		}
 
 		if (!tsmRealms) {
@@ -151,9 +150,8 @@ function Dashboard() {
 
 		columns = tableData.columns;
 		rows = tableData.rows;
-
-		dispatch(reset());
-	}, [dispatch, tsmRealms]);
+	}, []);
+	//	}, [dispatch, tsmRealms]);
 
 	let { columns, rows } = data;
 
@@ -316,64 +314,35 @@ function Dashboard() {
 		);
 	});
 
-	const DashboardNullTsmToken = () => {
-		return (
-			<div>
-				No token detected, please follow instructions{' '}
-				<Link underline='always' color='foreground'>
-					<NavLink to={'/profile'}>here</NavLink>
-				</Link>
-			</div>
-		);
-	};
-
-	const DashboardWithTsmToken = () => {
-		return (
-			<div>
-				Dashboard
-				<div>
-					{/* <PricesTable></PricesTable> */}
-					<Table
-						aria-label='Example table with dynamic content'
-						topContent={topContent}
-						topContentPlacement='outside'>
-						<TableHeader columns={columns}>
-							{(column) => (
-								<TableColumn key={column?.key}>{column?.label}</TableColumn>
-							)}
-						</TableHeader>
-						{rows.length === 0 ? (
-							<TableBody emptyContent={'No rows to display.'}>{[]}</TableBody>
-						) : (
-							<TableBody items={rows}>
-								{(item) => (
-									<TableRow key={item?.key}>
-										{(columnKey) => (
-											<TableCell>{getKeyValue(item, columnKey)}</TableCell>
-										)}
-									</TableRow>
-								)}
-							</TableBody>
-						)}
-					</Table>
-				</div>
-			</div>
-		);
-	};
-
 	return (
 		<>
 			<div>
-				{!user ? (
-					navigate('/login')
-				) : user?.tsmToken ? (
-					<DashboardWithTsmToken></DashboardWithTsmToken>
-				) : (
-					<DashboardNullTsmToken></DashboardNullTsmToken>
-				)}
+				<Table
+					aria-label='Example table with dynamic content'
+					topContent={topContent}
+					topContentPlacement='outside'>
+					<TableHeader columns={columns}>
+						{(column) => (
+							<TableColumn key={column?.key}>{column?.label}</TableColumn>
+						)}
+					</TableHeader>
+					{rows.length === 0 ? (
+						<TableBody emptyContent={'No rows to display.'}>{[]}</TableBody>
+					) : (
+						<TableBody items={rows}>
+							{(item) => (
+								<TableRow key={item?.key}>
+									{(columnKey) => (
+										<TableCell>{getKeyValue(item, columnKey)}</TableCell>
+									)}
+								</TableRow>
+							)}
+						</TableBody>
+					)}
+				</Table>
 			</div>
 		</>
 	);
 }
 
-export default Dashboard;
+export default PricesTable;

@@ -4,11 +4,19 @@ import tsmService from './tsmService';
 //get user from local storage
 //const user = JSON.parse(localStorage.getItem('user'));
 const tsmApiAuth = JSON.parse(localStorage.getItem('tsmApiKey'));
+const tsmOptions = JSON.parse(localStorage.getItem('tsmOptions'));
 const tsmApiKey = { tsmApiKey: tsmApiAuth.access_token };
 
 const initialState = {
 	tsmApiKey: tsmApiKey ? tsmApiKey : null,
 	tsmRealms: null,
+	tsmOptions: tsmOptions
+		? tsmOptions
+		: {
+				region: null,
+				realm: null,
+				auctionHouse: null,
+		  },
 	isError: false,
 	isSuccess: false,
 	isLoading: false,
@@ -44,6 +52,15 @@ export const getRealms = createAsyncThunk(
 				err.toString();
 			return thunkAPI.rejectWithValue(message);
 		}
+	}
+);
+
+export const setTSMOptions = createAsyncThunk(
+	'tsm/setTSMOptions',
+	async (tsmOptions, user, thunkAPI) => {
+		//make this access previous state and add on to
+		console.log(tsmOptions);
+		localStorage.setItem('tsmOptions', JSON.stringify(tsmOptions));
 	}
 );
 
@@ -89,6 +106,10 @@ export const tsmSlice = createSlice({
 				state.isError = true;
 				state.message = action.payload;
 				state.tsmRealms = null;
+			})
+			//SET TSM OPTIONS
+			.addCase(setTSMOptions.fulfilled, (state, action) => {
+				state.tsmOptions.region = action.payload;
 			});
 	},
 });
